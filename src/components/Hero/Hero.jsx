@@ -24,13 +24,13 @@ const Hero = () => {
         <div className="inset-0 bg-green-100 opacity-90 rounded-lg md:rounded-2xl"></div>
         <div className="relative z-10 max-w-lg sm:max-w-md md:max-w-2xl px-4 flex flex-col items-center text-center 2xl:pt-16 pt-8">
           <h1 className="relative text-2xl sm:text-3xl md:text-[48px] font-[600] tracking-[5%] uppercase font-[Plus_Jakarta_Sans] text-black">
-            We Have Diverse Clothing{" "}
-            <span className="text-green-600">Collection</span>
+            We Have Diverse Tshirt{" "}
+            <span className="text-green-600">designs</span>
           </h1>
 
           <p className="max-w-xs sm:max-w-md mt-4 text-gray-700 text-[14px] sm:text-[16px] font-[400] leading-[24px] tracking-[0%] font-[Plus_Jakarta_Sans]">
-            Embre Group is a dynamic and continuously growing group of companies
-            creating a buoyant economic climate.
+            Desnify is a dynamic and rapidly growing platform, fostering a
+            thriving environment for customized and AI-generated T-shirt designs
           </p>
 
           <button

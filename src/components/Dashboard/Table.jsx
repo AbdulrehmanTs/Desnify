@@ -118,7 +118,7 @@ const Table = () => {
                   </td>
                   {/* <td>dddssdsdsdsdsdsd</td> */}
                   <td className="p-3 text-sm sm:text-base text-center text-[#000000] font-[Open_Sans] font-semibold">
-                    <span>${Number(order.totalAmount).toFixed(2)}</span>
+                    <span>Rs.{Number(order.totalAmount).toFixed(2)}</span>
                   </td>
                 </tr>
               ))}

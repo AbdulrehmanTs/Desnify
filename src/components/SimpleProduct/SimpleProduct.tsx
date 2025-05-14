@@ -76,7 +76,7 @@ const SimpleProduct = ({ product }) => {
       {/* Product Info */}
       <div className="mt-3 text-start">
         <h2 className="text-lg font-semibold">{product?.name}</h2>
-        <p className="text-gray-700 text-sm">${product?.regPrice}</p>
+        <p className="text-gray-700 text-sm">Rs.{product?.regPrice}</p>
       </div>
 
       {/* Box & Button Section */}
@@ -92,7 +92,7 @@ const SimpleProduct = ({ product }) => {
           onClick={handleClick}
           className="bg-[#51BC74] py-2 px-6 cursor-pointer text-white text-sm rounded hover:bg-green-600 transition"
         >
-          Pedir
+          View
         </button>
       </div>
     </div>

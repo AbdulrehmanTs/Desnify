@@ -66,7 +66,7 @@ const ProductsDetailDashboard = ({ isNew, view, edit }) => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/images/upload-image`,
+        `${ApiBaseUrl}/images/upload-image`,
         {
           method: "POST",
           headers: {
@@ -151,6 +151,7 @@ const ProductsDetailDashboard = ({ isNew, view, edit }) => {
       return null;
     }
   };
+  
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -193,6 +194,7 @@ const ProductsDetailDashboard = ({ isNew, view, edit }) => {
     if (!isNew) {
       fetchProducts();
     }
+    fetchCategories()
   }, [params.id, token, isNew]);
 
   const addProduct = async () => {

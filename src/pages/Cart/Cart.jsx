@@ -77,7 +77,7 @@ const Cart = () => {
                       </div>
 
                       <span className="ml-4 font-[karla] font-semibold text-[16px] leading-[16px] tracking-[0%]">
-                        ${item?.salesPrice?.toFixed(2)}
+                        Rs.{item?.salesPrice?.toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -105,7 +105,7 @@ const Cart = () => {
                   Subtotal
                 </span>
                 <span className="font-[karla] font-semibold text-[16px] leading-[16px] tracking-[0%]">
-                  ${subtotal.toFixed(2)}
+                  Rs.{subtotal.toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between py-2 mb-2">
@@ -113,7 +113,7 @@ const Cart = () => {
                   Shipping
                 </span>
                 <span className="font-[karla] font-semibold text-[16px] leading-[16px] tracking-[0%]">
-                  ${shipping.toFixed(2)}
+                  Rs.{shipping.toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between py-2 mb-4">
@@ -121,7 +121,7 @@ const Cart = () => {
                   Tax
                 </span>
                 <span className="font-[karla] font-semibold text-[16px] leading-[16px] tracking-[0%]">
-                  ${tax.toFixed(2)}
+                  Rs.{tax.toFixed(2)}
                 </span>
               </div>
               <div className="border-b"></div>
@@ -130,7 +130,7 @@ const Cart = () => {
                   Total
                 </span>
                 <span className="font-[karla] font-bold text-[20px] leading-[20px] tracking-[0%]">
-                  ${total.toFixed(2)}
+                  Rs.{total.toFixed(2)}
                 </span>
               </div>
 

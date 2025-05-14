@@ -17,16 +17,16 @@ const ProductDetail = ({ product }) => {
 
   return (
     <>
-      <div className="w-full mx-auto px-4 sm:px-6 mb-24 mt-24">
+      <div className="w-full mx-auto px-4 sm:px-6 mb-24">
         {/* Product Detail Container */}
-        <div className="w-full flex flex-col sm:flex-row md:flex-row my-12 2xl:my-24  items-center">
+        <div className="w-full flex flex-col sm:flex-row md:flex-row">
           {/* Left Section - Product Images */}
           <div className="w-full sm:w-1/2 md:w-1/2 flex flex-col items-center md:items-start md:pl-20 2xl:pl-24">
             {/* Main Product Image */}
             <img
               src={product?.images[0]?.imageUrl}
               alt="T-Shirt"
-              className="w-48 sm:w-72 md:w-80 lg:w-[600px] object-contain"
+              className="w-full h-[500px] object-contain"
             />
 
             {/* Smaller Images for Selection */}
@@ -55,7 +55,7 @@ const ProductDetail = ({ product }) => {
           </div>
 
           {/* Right Section - Product Details */}
-          <div className="w-full sm:w-1/2 md:w-1/2 2xl:mt-[-300px] md:mt-[-180px] mt-8 sm:mt-0 md:ml-10 text-center sm:text-left">
+          <div className="w-full sm:w-1/2 md:w-1/2 mt-8 sm:mt-0 md:ml-10 text-center sm:text-left">
             {/* Product Name */}
             <h2 className="font-['Inter'] font-extrabold text-[32px] sm:text-[40px] leading-[100%]">
               {product?.name}
@@ -135,7 +135,7 @@ const ProductDetail = ({ product }) => {
 
                 {/* Price */}
                 <p className="font-[Mada] font-bold text-[36px] sm:text-[48px] leading-[100%] tracking-[0%]">
-                  ${product?.salesPrice} USD
+                  Rs.{Number(product?.salesPrice)?.toFixed(2)}
                 </p>
               </div>
             </div>
