@@ -4,6 +4,8 @@ import SigninImage from "../../assets/Signin/SigninImage.svg";
 import BackgroundLogo from "../../assets/Signin/backgroundLogo.svg";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ApiBaseUrl } from "../../lib/utils";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +16,7 @@ const SignUp = () => {
     confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,7 +32,7 @@ const SignUp = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        import.meta.env.VITE_API_BASE_URL + "/user/registerUser",
+        ApiBaseUrl + "/user/registerUser",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -46,6 +49,7 @@ const SignUp = () => {
       const data = await response.json();
       if (response.ok) {
         toast.success("Account created successfully!");
+        navigate("/")
       } else {
         toast.error(data.message || "Signup failed!");
       }
@@ -166,17 +170,17 @@ const SignUp = () => {
               disabled={loading}
               className="w-full cursor-pointer bg-green-600 text-white p-3 rounded-md font-semibold hover:bg-green-700"
             >
-              {loading ? "Signing up..." : "Sign In"}
+              {loading ? "Signing up..." : "Sign Up"}
             </button>
           </form>
 
           <p className="text-center text-gray-600 mt-4">
             Already have an account?{" "}
-            <a href="/login">
+            <Link to="/login">
               <span className="text-green-600 font-bold cursor-pointer">
                 Login
               </span>
-            </a>
+            </Link>
           </p>
         </div>
       </div>

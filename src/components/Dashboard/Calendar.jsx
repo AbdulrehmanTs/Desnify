@@ -164,7 +164,7 @@ const Calendar = ({ title, calendar = false, status = false }) => {
 
         {/* Add New Product Button (if calendar is false) */}
         {!calendar && (
-          <a href="/dashboard/product-detail" className="w-full sm:w-auto">
+          <a href="/dashboard/product/detail" className="w-full sm:w-auto">
             <button className="w-full cursor-pointer sm:w-auto bg-[#51BC74] py-2 px-4 text-sm sm:text-base uppercase font-[Rubik] font-medium text-white rounded-[8px] border border-[#51BC74] flex items-center justify-center gap-2">
               <CirclePlus size={18} color="white" />
               Add New Product

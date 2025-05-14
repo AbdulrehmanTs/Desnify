@@ -1,31 +1,54 @@
-
-
 import { useState, useEffect } from "react";
 import Sidebar from "../../components/Dashboard/Sidebar";
 import Header from "../../components/Dashboard/Header";
 import ProductCard from "../../components/Dashboard/ProductCard";
 import Calendar from "../../components/Dashboard/Calendar";
 import { Menu } from "lucide-react";
-import { getUserRole, isAuthenticated } from "../../hooks/useAuth";
+import { autoLogout, getToken, isAuthenticated } from "../../hooks/useAuth";
+import { ApiBaseUrl } from "../../lib/utils";
+import Spinner from "../../components/loader/spinner";
 
 const AllProducts = () => {
   const [showSidebar, setShowSidebar] = useState(false);
-  const isloggedIn = isAuthenticated();
-  const role = getUserRole();
-  useEffect(() => {
-    if (!isloggedIn || !role) {
-      window.location.href = "/login";
-    } else if (role !== "a") {
-      window.location.href = "/login";
-    }
-  }, [isloggedIn, role]);
+  const [products, setProducts] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const loggedIn = isAuthenticated();
+  const token = getToken();
 
-  if (!isloggedIn) {
-    return null;
-  }
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true); // Start loading
+        const response = await fetch(
+          ApiBaseUrl +
+            "/product/getAllProductsByUserId?pageNumber=1&pageSize=10",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const result = await response.json();
+        console.log("result: ", result);
+        setProducts(result.data);
+        if (result.msg === "Session Expired") {
+          autoLogout();
+        }
+        if (!response.ok) throw new Error("Network response was not ok");
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false); // Stop loading
+      }
+    };
+
+    fetchProducts();
+  }, [loggedIn, token]);
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen">
+    <div className="flex flex-col md:flex-row md:max-h-screen">
       {/* Toggle Sidebar Button */}
       <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">
         <button onClick={() => setShowSidebar(!showSidebar)}>
@@ -35,7 +58,7 @@ const AllProducts = () => {
       </div>
 
       {showSidebar && (
-        <div className="md:hidden fixed top-0 left-0 z-50 w-64 h-full bg-white shadow-lg">
+        <div className="md:hidden w-64 h-full bg-white shadow-lg">
           <Sidebar closeSidebar={() => setShowSidebar(false)} />
         </div>
       )}
@@ -44,15 +67,23 @@ const AllProducts = () => {
         <Sidebar />
       </div>
 
-      <main className="flex-1 bg-[#E7E7E3]">
-        <Header />
+      <main className="relative flex-1 bg-[#E7E7E3] md:h-screen overflow-auto">
+        <div className="sticky top-0">
+          <Header />
+        </div>
         <Calendar calendar={false} title={"All Products"} />
         <div className="p-4">
-          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {Array.from({ length: 6 }).map((_, idx) => (
-              <ProductCard key={idx} />
-            ))}
-          </div>
+          {loading ? (
+            <Spinner />
+          ) : error ? (
+            <p className="text-red-500 text-sm text-center ">{error}</p>
+          ) : (
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {products?.map((product, idx) => (
+                <ProductCard product={product} key={idx} />
+              ))}
+            </div>
+          )}
         </div>
       </main>
     </div>

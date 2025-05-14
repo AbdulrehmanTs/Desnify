@@ -1,15 +1,7 @@
-
 import SimpleProduct from "../SimpleProduct/SimpleProduct";
 
 // eslint-disable-next-line react/prop-types
 const HomeProduct = ({ heading = "", data }) => {
-//   const data = Array(8).fill({
-//     title: "Lorem Ipsum",
-//     quantity: 20,
-//     price: 18,
-//   }); // Example 8 products
-
-
   return (
     <div id="products" className="w-full mx-auto px-4 sm:px-6 mb-40">
       <div className=" w-full mx-auto flex flex-col items-center text-center">
@@ -23,10 +15,7 @@ const HomeProduct = ({ heading = "", data }) => {
         {/* Products Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6 w-full">
           {data?.data?.map((product) => (
-            <SimpleProduct
-              key={product._id}
-              product={product}
-            />
+            <SimpleProduct key={product._id} product={product} />
           ))}
         </div>
       </div>

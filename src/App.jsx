@@ -99,7 +99,19 @@ function MainLayout() {
           element={<ProtectedRouteAdmin element={<AIOrderList />} />}
         />
         <Route
-          path="/dashboard/product-detail"
+          path="/dashboard/product/new"
+          element={
+            <ProtectedRouteAdmin element={<ProductsDetailDashboard />} />
+          }
+        />
+        <Route
+          path="/dashboard/product/detail/:id"
+          element={
+            <ProtectedRouteAdmin element={<ProductsDetailDashboard />} />
+          }
+        />
+        <Route
+          path="/dashboard/product/edit/:id"
           element={
             <ProtectedRouteAdmin element={<ProductsDetailDashboard />} />
           }
