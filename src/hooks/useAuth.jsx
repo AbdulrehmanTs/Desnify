@@ -4,6 +4,10 @@ export function isAuthenticated() {
   return localStorage.getItem("token") !== null;
 }
 
+export function isAuthenticatedAdmin() {
+  return localStorage.getItem("r") === "a";
+}
+
 export function getUserRole() {
   const role = localStorage.getItem("r");
 
@@ -19,9 +23,8 @@ export function getToken() {
   return localStorage.getItem("token") || null;
 }
 
-
-export function autoLogout () {
+export function autoLogout() {
   localStorage.clear();
-  toast.info("Session expired. PLease login again.")
+  toast.info("Session expired. PLease login again.");
   window.location.href = "/";
-};
+}

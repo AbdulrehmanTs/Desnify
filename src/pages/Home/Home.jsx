@@ -3,7 +3,7 @@ import Hero from "../../components/Hero/Hero";
 import HomeProduct from "../../components/HomeProductSection/HomeProduct";
 import { ApiBaseUrl } from "../../lib/utils";
 import Spinner from "../../components/loader/spinner";
-import { getToken, isAuthenticated } from "../../hooks/useAuth";
+import { autoLogout, getToken, isAuthenticated } from "../../hooks/useAuth";
 
 const Home = () => {
   const [products, setProducts] = useState(null);
@@ -25,10 +25,13 @@ const Home = () => {
       try {
         setLoading(true); // Start loading
         const response = await fetch(ApiBaseUrl + path, options);
-        if (!response.ok) throw new Error("Network response was not ok");
         const result = await response.json();
         console.log("result: ", result);
         setProducts(result);
+        if (result.msg === "Session Expired") {
+          autoLogout();
+        }
+        if (!response.ok) throw new Error("Network response was not ok");
       } catch (err) {
         setError(err.message);
       } finally {

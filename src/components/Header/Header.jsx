@@ -249,7 +249,7 @@ const Header = () => {
                 </li>
                 <button
                   onClick={logout}
-                  className="w-full text-start px-4 py-2 hover:bg-gray-100 text-red-500"
+                  className="w-full cursor-pointer text-start px-4 py-2 hover:bg-gray-100 text-red-500"
                 >
                   Logout
                 </button>

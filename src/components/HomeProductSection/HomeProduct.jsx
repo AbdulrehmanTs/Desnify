@@ -11,7 +11,7 @@ const HomeProduct = ({ heading = "", data }) => {
 
 
   return (
-    <div className="w-full mx-auto px-4 sm:px-6 mb-40">
+    <div id="products" className="w-full mx-auto px-4 sm:px-6 mb-40">
       <div className=" w-full mx-auto flex flex-col items-center text-center">
         {/* Heading */}
         <h2 className="font-['Plus_Jakarta_Sans'] font-semibold text-2xl sm:text-3xl md:text-4xl leading-11">

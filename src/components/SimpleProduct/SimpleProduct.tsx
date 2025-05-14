@@ -90,7 +90,7 @@ const SimpleProduct = ({ product }) => {
         {/* Order Button */}
         <button
           onClick={handleClick}
-          className="bg-[#51BC74] py-2 px-6 cursor-pointer text-white text-sm rounded-xs hover:bg-green-600 transition"
+          className="bg-[#51BC74] py-2 px-6 cursor-pointer text-white text-sm rounded hover:bg-green-600 transition"
         >
           Pedir
         </button>

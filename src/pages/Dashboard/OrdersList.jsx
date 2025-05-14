@@ -1,57 +1,51 @@
-// import React from 'react'
-// import Sidebar from "../../components/Dashboard/Sidebar";
-// import Header from "../../components/Dashboard/Header";
-// import Calendar from '../../components/Dashboard/Calendar';
-// import Table from '../../components/Dashboard/Table';
-
-
-// const OrdersList = () => {
-//   return (
-//     <div className="flex">
-//       <Sidebar />
-//       <main className="flex-1  bg-[#E7E7E3]">
-//         <Header />
-//         <Calendar calendar={true} title={"Order List"} status={true} />
-//         <div className="p-6 ">
-
-//           <div className="mt-6"></div>
-//           <Table />
-//         </div>
-
-//       </main>
-//     </div>
-//   )
-// }
-
-// export default OrdersList
-
-
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import Sidebar from "../../components/Dashboard/Sidebar";
 import Header from "../../components/Dashboard/Header";
-import Calendar from '../../components/Dashboard/Calendar';
-import Table from '../../components/Dashboard/Table';
-import { Menu } from 'lucide-react';
+import Calendar from "../../components/Dashboard/Calendar";
+import Table from "../../components/Dashboard/Table";
+import { Menu } from "lucide-react";
+import { autoLogout, getToken } from "../../hooks/useAuth";
+import { ApiBaseUrl } from "../../lib/utils";
 
 const OrdersList = () => {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [display, setDisplay] = useState(false)
+
+  const token = getToken();
+  const [orders, setOrders] = useState({});
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('r');
+    const fetchProducts = async () => {
+      try {
+        setLoading(true); // Start loading
+        const response = await fetch(
+          ApiBaseUrl + "/order/getAllOrders?pageNumber=1&pageSize=10",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const result = await response.json();
+        console.log("result: ", result);
+        setOrders(result.data);
+        if (result.msg === "Session Expired") {
+          autoLogout();
+        }
+        if (!response.ok) throw new Error("Network response was not ok");
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false); // Stop loading
+      }
+    };
 
-    if (!token || !role) {
-      window.location.href = "/login";
-    } else if (role !== 'a') {
-      window.location.href = "/login";
-    } else {
-      setDisplay(true)
-    }
-  }, [])
+    fetchProducts();
+  }, [token]);
 
-  if (!display) {
-    return null;
-  }
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-[#E7E7E3]">
       <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">

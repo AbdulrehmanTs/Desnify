@@ -28,7 +28,7 @@ import ProductsDetailDashboard from "./pages/Dashboard/ProductsDetailDashboard";
 import { ToastContainer } from "react-toastify";
 import ScrollToTop from "react-scroll-to-top";
 import SignUp from "./pages/Signup/Signup";
-import { isAuthenticated } from "./hooks/useAuth";
+import { isAuthenticated, isAuthenticatedAdmin } from "./hooks/useAuth";
 import Checkout from "./pages/checkout/Checkout";
 
 function App() {
@@ -69,20 +69,40 @@ function MainLayout() {
           element={<ProtectedRoute element={<CustomizePage />} />}
         />
         <Route path="/cart" element={<ProtectedRoute element={<Cart />} />} />
-        <Route path="/checkout" element={<ProtectedRoute element={<Checkout />} />} />
-        <Route path="/wishlist" element={<ProtectedRoute element={<Wishlist />} />} />
+        <Route
+          path="/checkout"
+          element={<ProtectedRoute element={<Checkout />} />}
+        />
+        <Route
+          path="/wishlist"
+          element={<ProtectedRoute element={<Wishlist />} />}
+        />
         <Route path="/about" element={<About />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/account" element={<AccountSettings />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dashboard/all" element={<AllProducts />} />
-        <Route path="/dashboard/orderlist" element={<OrdersList />} />
-        <Route path="/dashboard/ai-orderlist" element={<AIOrderList />} />
+        <Route
+          path="/dashboard"
+          element={<ProtectedRouteAdmin element={<Dashboard />} />}
+        />
+        <Route
+          path="/dashboard/all"
+          element={<ProtectedRouteAdmin element={<AllProducts />} />}
+        />
+        <Route
+          path="/dashboard/orderlist"
+          element={<ProtectedRouteAdmin element={<OrdersList />} />}
+        />
+        <Route
+          path="/dashboard/ai-orderlist"
+          element={<ProtectedRouteAdmin element={<AIOrderList />} />}
+        />
         <Route
           path="/dashboard/product-detail"
-          element={<ProductsDetailDashboard />}
+          element={
+            <ProtectedRouteAdmin element={<ProductsDetailDashboard />} />
+          }
         />
       </Routes>
       {!hideHeaderFooter && <Footer />}
@@ -91,8 +111,14 @@ function MainLayout() {
 }
 
 // ProtectedRoute component
+// eslint-disable-next-line react/prop-types
 const ProtectedRoute = ({ element }) => {
   return isAuthenticated() ? element : <Navigate to="/login" replace />;
+};
+
+// eslint-disable-next-line react/prop-types
+const ProtectedRouteAdmin = ({ element }) => {
+  return isAuthenticatedAdmin() ? element : <Navigate to="/login" replace />;
 };
 
 export default App;
