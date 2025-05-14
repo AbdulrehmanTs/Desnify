@@ -5,12 +5,12 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import SigninImage from "../../assets/Signin/SigninImage.svg";
 import BackgroundLogo from "../../assets/Signin/backgroundLogo.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
-
   const API_URL = import.meta.env.VITE_API_BASE_URL + "/user/loginUser";
 
   const handleChange = (e) => {
@@ -32,12 +32,12 @@ const Login = () => {
       ) {
         localStorage.setItem("r", "a");
         setTimeout(() => {
-          window.location.href = "/dashboard"; // Change the path as needed
+          navigate("/dashboard"); // Change the path as needed
         }, 2000);
       } else if (response.status === 200) {
         localStorage.setItem("r", "u");
         setTimeout(() => {
-          window.location.href = "/"; // Change the path as needed
+          navigate("/"); // Change the path as needed
         }, 1000);
       }
     } catch (error) {
