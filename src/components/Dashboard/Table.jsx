@@ -5,14 +5,6 @@ import { ApiBaseUrl } from "../../lib/utils";
 import Spinner from "../loader/spinner";
 
 const Table = () => {
-  // const orders = [
-  //   { id: "#25426", date: "Nov 8th, 2023", name: "Kavin", status: "Delivered" },
-  //   { id: "#25425", date: "Nov 7th, 2023", name: "Komael", status: "Canceled" },
-  //   { id: "#25424", date: "Nov 6th, 2023", name: "Nikhil", status: "Delivered" },
-  //   { id: "#25423", date: "Nov 5th, 2023", name: "Shivam", status: "Canceled" },
-  //   { id: "#25422", date: "Nov 4th, 2023", name: "Shadab", status: "Delivered" },
-  //   { id: "#25421", date: "Nov 2nd, 2023", name: "Yogesh", status: "Delivered" },
-  // ];
 
   const token = getToken();
   const [orders, setOrders] = useState([]);
@@ -34,7 +26,6 @@ const Table = () => {
           }
         );
         const result = await response.json();
-        console.log("result: ", result);
         setOrders(result.data);
         if (result.msg === "Session Expired") {
           autoLogout();
