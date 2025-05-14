@@ -24,19 +24,20 @@ const SimpleProduct = ({ product }) => {
   }
   const [isWishlisted, setIsWishlisted] = useState(product?.isWishlisted);
 
+  console.log(product?._id)
   async function handleAddToWishlist() {
-    if (!loggedIn) navigate("/login")
+    if (!loggedIn) return navigate("/login")
     // Optimistic update
     setIsWishlisted((prev) => !prev); // Immediately reflect the UI change
-
     try {
       // API call to add/remove from wishlist
       const response = await fetch(
         `${ApiBaseUrl}/product/addOrRemoveToWishList`,
         {
-          method: isWishlisted ? "DELETE" : "PUT",
+          method: "put",
           headers: {
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({ productId: product?._id }),
         }
