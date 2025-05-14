@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Logo from "../../assets/Header/Logo.svg";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { autoLogout, getToken } from "../../hooks/useAuth";
 import { ApiBaseUrl } from "../../lib/utils";
 import Spinner from "../loader/spinner";
 
+// eslint-disable-next-line react/prop-types
 const Sidebar = ({ closeSidebar }) => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +56,7 @@ const Sidebar = ({ closeSidebar }) => {
       </div>
       <nav className="mt-4 ">
         <ul className="space-y-2">
-          <a href="/dashboard">
+          <Link to="/dashboard">
             <li
               className={`${
                 location.pathname === "/dashboard"
@@ -65,8 +66,8 @@ const Sidebar = ({ closeSidebar }) => {
             >
               Dashboard
             </li>
-          </a>
-          <a href="/dashboard/all">
+          </Link>
+          <Link to="/dashboard/all">
             <li
               className={`${
                 location.pathname === "/dashboard/all"
@@ -76,8 +77,8 @@ const Sidebar = ({ closeSidebar }) => {
             >
               All Products
             </li>
-          </a>
-          <a href="/dashboard/orderlist">
+          </Link>
+          <Link to="/dashboard/orderlist">
             <li
               className={`${
                 location.pathname === "/dashboard/orderlist"
@@ -87,8 +88,8 @@ const Sidebar = ({ closeSidebar }) => {
             >
               Order List
             </li>
-          </a>
-          <a href="/dashboard/ai-orderlist">
+          </Link>
+          <Link to="/dashboard/ai-orderlist">
             <li
               className={`${
                 location.pathname === "/dashboard/ai-orderlist"
@@ -98,7 +99,7 @@ const Sidebar = ({ closeSidebar }) => {
             >
               AI Order List
             </li>
-          </a>
+          </Link>
           <li>
             <button
               className="flex justify-between cursor-pointer items-center w-full p-2 font-[Rubik] font-semibold text-[20px] leading-[100%] tracking-[0px] text-[#232321]"
@@ -111,20 +112,22 @@ const Sidebar = ({ closeSidebar }) => {
               <Spinner />
             ) : isOpen && error ? (
               <p className="text-red-500 text-sm text-center ">{error}</p>
-            ) : isOpen && (
-              <ul className="pl-4 space-y-4 mt-4">
-                {categories?.map((item) => (
-                  <li
-                    key={item?._id}
-                    className="flex justify-between cursor-pointer items-center text-[#232321] font-[Open_Sans] font-semibold text-[16px] leading-[100%] tracking-[0px]"
-                  >
-                    {item?.categoryName}{" "}
-                    <span className="bg-gray-300 text-gray-700 text-sm px-2 py-1 rounded">
-                      {item?.__v}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+            ) : (
+              isOpen && (
+                <ul className="pl-4 space-y-4 mt-4">
+                  {categories?.map((item) => (
+                    <li
+                      key={item?._id}
+                      className="flex justify-between cursor-pointer items-center text-[#232321] font-[Open_Sans] font-semibold text-[16px] leading-[100%] tracking-[0px]"
+                    >
+                      {item?.categoryName}{" "}
+                      <span className="bg-gray-300 text-gray-700 text-sm px-2 py-1 rounded">
+                        {item?.__v}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )
             )}
           </li>
         </ul>
