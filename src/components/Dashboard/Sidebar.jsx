@@ -28,7 +28,6 @@ const Sidebar = ({ closeSidebar }) => {
           },
         });
         const result = await response.json();
-        console.log("result: ", result);
         setCategories(result.data);
         if (result.msg === "Session Expired") {
           autoLogout();

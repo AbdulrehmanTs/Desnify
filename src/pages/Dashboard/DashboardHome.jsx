@@ -44,7 +44,7 @@ export default function Dashboard() {
   }, [token]);
 
   return (
-    <div className="flex flex-col lg:flex-row">
+    <div className="flex flex-col lg:flex-row md:max-h-screen">
       <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">
         <button onClick={() => setShowSidebar(!showSidebar)}>
           <Menu />
@@ -62,8 +62,10 @@ export default function Dashboard() {
         <Sidebar />
       </div>
 
-      <main className="flex-1 bg-[#E7E7E3]">
-        <Header />
+      <main className="relative flex-1 bg-[#E7E7E3] md:h-screen overflow-auto">
+        <div className="sticky top-0 z-10">
+          <Header />
+        </div>
         <Calendar calendar={true} title={"Dashboard"} />
         <div className="p-4 sm:p-6 2xl:mt-[-40px]">
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

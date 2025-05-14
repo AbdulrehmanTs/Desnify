@@ -1,124 +1,13 @@
-
-// import  { useState } from 'react';
-// import DatePicker from 'react-datepicker';
-// import { CirclePlus } from 'lucide-react';
-// import { FaRegCalendarAlt } from 'react-icons/fa';
-// import 'react-datepicker/dist/react-datepicker.css';
-// import { ChevronDown } from "lucide-react";
-
-// const Calendar = ({ title, calendar = false, status = false }) => {
-//     const [startDate, setStartDate] = useState(new Date());
-//     const [endDate, setEndDate] = useState(new Date());
-//     const [selectedStatus, setSelectedStatus] = useState(""); // Store selected status
-//     const [isOpen, setIsOpen] = useState(false);
-//     return (
-//         <div className="w-full  p-8 flex justify-between items-center rounded">
-//             {/* Left Side - Title & Breadcrumb */}
-//             <div className='space-y-2'>
-//                 <h3 className="font-[Rubik] font-semibold text-[24px] leading-[100%] tracking-[0%] text-[#000]">
-//                     {title}
-//                 </h3>
-//                 <p className="font-[Open_Sans] font-semibold text-[16px] leading-[100%] tracking-[0%] text-gray-600">
-//                     Home &gt; {title}
-//                 </p>
-
-
-//             </div>
-
-//             {/* Right Side - Calendar */}
-//             <div className='space-y-4 '>
-//                 {
-//                     calendar === true ? (
-//                         <div className="flex items-center text-gray-800 border rounded px-2 py-1 bg-white">
-//                             <FaRegCalendarAlt className="mr-2 text-lg" />
-//                             <DatePicker
-//                                 selected={startDate}
-//                                 onChange={(date) => setStartDate(date)}
-//                                 selectsStart
-//                                 startDate={startDate}
-//                                 endDate={endDate}
-//                                 dateFormat="MMM d, yyyy"
-//                                 className="outline-none text-sm w-24"
-//                             />
-//                             <span className="mx-2">-</span>
-//                             <DatePicker
-//                                 selected={endDate}
-//                                 onChange={(date) => setEndDate(date)}
-//                                 selectsEnd
-//                                 startDate={startDate}
-//                                 endDate={endDate}
-//                                 minDate={startDate}
-//                                 dateFormat="MMM d, yyyy"
-//                                 className="outline-none text-sm w-24"
-//                             />
-//                         </div>
-//                     ) : (
-//                         <a href="/dashboard/product-detail" className=' cursor-pointer'><button className=' cursor-pointer bg-[#51BC74] py-2 px-4 uppercase font-[rubik] font-medium tracking-[0.025px] text-white rounded-[8px] border border-[#51BC74]  gap-4 flex'>
-//                         <span><CirclePlus color='white' /></span> ADD New Product
-//                     </button></a>
-//                     )
-//                 }
-
-//                 {
-//                     status === true ? (
-//                         <div className="relative w-48 ">
-//                             {/* Dropdown Button */}
-//                             <button
-//                                 onClick={() => setIsOpen(!isOpen)}
-//                                 className="w-full flex justify-between items-center px-4 py-2 bg-gray-100 rounded-md shadow-sm text-gray-800"
-//                             >
-//                                 {selectedStatus ? selectedStatus : "Change Status"}
-//                                 <ChevronDown className="w-4 h-4 text-gray-600" />
-//                             </button>
-
-//                             {/* Dropdown Options */}
-//                             {isOpen && (
-//                                 <div className="absolute mt-1 w-full bg-white border rounded-md shadow-md">
-//                                     <ul className="py-2">
-//                                         <li
-//                                             className="px-4 py-2 cursor-pointer hover:bg-gray-200"
-//                                             onClick={() => {
-//                                                 setSelectedStatus("Approved");
-//                                                 setIsOpen(false);
-//                                             }}
-//                                         >
-//                                             Approved
-//                                         </li>
-//                                         <li
-//                                             className="px-4 py-2 cursor-pointer hover:bg-gray-200"
-//                                             onClick={() => {
-//                                                 setSelectedStatus("Pending");
-//                                                 setIsOpen(false);
-//                                             }}
-//                                         >
-//                                             Pending
-//                                         </li>
-//                                     </ul>
-//                                 </div>
-//                             )}
-//                         </div>
-//                     ) : (null)
-//                 }
-//             </div>
-
-
-//         </div>
-//     );
-// };
-
-// export default Calendar;
-
-
-import  { useState } from 'react';
-import DatePicker from 'react-datepicker';
-import { CirclePlus, ChevronDown } from 'lucide-react';
-import { FaRegCalendarAlt } from 'react-icons/fa';
-import 'react-datepicker/dist/react-datepicker.css';
+import { useState } from "react";
+import DatePicker from "react-datepicker";
+import { CirclePlus, ChevronDown } from "lucide-react";
+import { FaRegCalendarAlt } from "react-icons/fa";
+import "react-datepicker/dist/react-datepicker.css";
 
 const Calendar = ({ title, calendar = false, status = false }) => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [selectedStatus, setSelectedStatus] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -164,7 +53,7 @@ const Calendar = ({ title, calendar = false, status = false }) => {
 
         {/* Add New Product Button (if calendar is false) */}
         {!calendar && (
-          <a href="/dashboard/product/detail" className="w-full sm:w-auto">
+          <a href="/dashboard/product/new" className="w-full sm:w-auto">
             <button className="w-full cursor-pointer sm:w-auto bg-[#51BC74] py-2 px-4 text-sm sm:text-base uppercase font-[Rubik] font-medium text-white rounded-[8px] border border-[#51BC74] flex items-center justify-center gap-2">
               <CirclePlus size={18} color="white" />
               Add New Product
@@ -179,14 +68,14 @@ const Calendar = ({ title, calendar = false, status = false }) => {
               onClick={() => setIsOpen(!isOpen)}
               className="w-full flex justify-between items-center px-4 py-2 bg-gray-100 rounded-md shadow-sm text-gray-800"
             >
-              {selectedStatus || 'Change Status'}
+              {selectedStatus || "Change Status"}
               <ChevronDown className="w-4 h-4 text-gray-600" />
             </button>
 
             {isOpen && (
               <div className="absolute z-10 mt-1 w-full bg-white border rounded-md shadow-md">
                 <ul className="py-2">
-                  {['Approved', 'Pending'].map((statusOption) => (
+                  {["Approved", "Pending"].map((statusOption) => (
                     <li
                       key={statusOption}
                       className="px-4 py-2 cursor-pointer hover:bg-gray-200"

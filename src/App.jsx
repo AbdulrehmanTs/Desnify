@@ -4,6 +4,7 @@ import {
   Route,
   useLocation,
   Navigate,
+  matchPath,
 } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
@@ -30,6 +31,7 @@ import ScrollToTop from "react-scroll-to-top";
 import SignUp from "./pages/Signup/Signup";
 import { isAuthenticated, isAuthenticatedAdmin } from "./hooks/useAuth";
 import Checkout from "./pages/checkout/Checkout";
+import { useEffect, useState } from "react";
 
 function App() {
   return (
@@ -41,14 +43,28 @@ function App() {
 
 function MainLayout() {
   const location = useLocation();
-  const hideHeaderFooter =
-    location.pathname === "/signup" ||
-    location.pathname === "/login" ||
-    location.pathname === "/dashboard" ||
-    location.pathname === "/dashboard/all" ||
-    location.pathname === "/dashboard/orderlist" ||
-    location.pathname === "/dashboard/ai-orderlist" ||
-    location.pathname === "/dashboard/product-detail";
+  const [hideHeaderFooter, setHideHeaderFooter] = useState(false);
+
+  useEffect(() => {
+    // List of static and dynamic routes
+    const pathsToHide = [
+      "/signup",
+      "/login",
+      "/dashboard",
+      "/dashboard/all",
+      "/dashboard/orderlist",
+      "/dashboard/ai-orderlist",
+      "/dashboard/product/:id", // dynamic
+      "/dashboard/product/detail/:id", // dynamic
+      "/dashboard/product/edit/:id", // dynamic
+    ];
+
+    const shouldHide = pathsToHide.some((path) =>
+      matchPath({ path, end: true }, location.pathname)
+    );
+
+    setHideHeaderFooter(shouldHide);
+  }, [location]);
 
   return (
     <div className="bg-white max-w-[1440px] mx-auto">
@@ -101,19 +117,19 @@ function MainLayout() {
         <Route
           path="/dashboard/product/new"
           element={
-            <ProtectedRouteAdmin element={<ProductsDetailDashboard />} />
+            <ProtectedRouteAdmin element={<ProductsDetailDashboard isNew={true} />} />
           }
         />
         <Route
           path="/dashboard/product/detail/:id"
           element={
-            <ProtectedRouteAdmin element={<ProductsDetailDashboard />} />
+            <ProtectedRouteAdmin element={<ProductsDetailDashboard view={true} />} />
           }
         />
         <Route
           path="/dashboard/product/edit/:id"
           element={
-            <ProtectedRouteAdmin element={<ProductsDetailDashboard />} />
+            <ProtectedRouteAdmin element={<ProductsDetailDashboard edit={true} />} />
           }
         />
       </Routes>

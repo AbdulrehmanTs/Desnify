@@ -53,7 +53,7 @@ const AIOrderList = () => {
     return null;
   }
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen">
+    <div className="flex flex-col lg:flex-row md:max-h-screen">
       {/* Toggle Sidebar Button */}
       <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">
         <button onClick={() => setShowSidebar(!showSidebar)}>
@@ -73,8 +73,10 @@ const AIOrderList = () => {
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 bg-[#E7E7E3]">
-        <Header />
+      <main className="relative flex-1 bg-[#E7E7E3] md:h-screen overflow-auto">
+        <div className="sticky top-0 z-10">
+          <Header />
+        </div>
 
         {/* Calendar with title and status filter */}
         <Calendar calendar={true} title="AI Orders List" status={true} />

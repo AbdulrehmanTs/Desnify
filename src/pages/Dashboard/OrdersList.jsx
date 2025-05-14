@@ -47,7 +47,7 @@ const OrdersList = () => {
   }, [token]);
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-[#E7E7E3]">
+    <div className="flex flex-col lg:flex-row md:max-h-screen bg-[#E7E7E3]">
       <div className="md:hidden flex justify-between items-center p-4 bg-white shadow">
         <button onClick={() => setShowSidebar(!showSidebar)}>
           <Menu />
@@ -66,8 +66,10 @@ const OrdersList = () => {
       </div>
 
       {/* Main content */}
-      <main className="flex-1">
-        <Header />
+      <main className="relative flex-1 bg-[#E7E7E3] md:h-screen overflow-auto">
+        <div className="sticky top-0 z-10">
+          <Header />
+        </div>
 
         {/* Calendar + Filters */}
         <Calendar calendar={true} title={"Order List"} status={true} />

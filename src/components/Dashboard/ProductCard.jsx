@@ -79,12 +79,12 @@ function Options({ product }) {
         <ul className="absolute right-0 z-10 w-40 rounded-lg shadow-xl bg-gray-50 overflow-hidden">
           <Link to={`/dashboard/product/detail/${product?._id}`}>
             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center">
-              <EyeIcon size={16} /> <span className="ml-2">View</span>
+              <EyeIcon size={16} color="green" /> <span className="ml-2 text-sm">View</span>
             </li>
           </Link>
           <Link to={`/dashboard/product/edit/${product?._id}`}>
             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center">
-              <PenIcon size={16} /> <span className="ml-2">Edit</span>
+              <PenIcon size={16} /> <span className="ml-2 text-sm">Edit</span>
             </li>
           </Link>
         </ul>

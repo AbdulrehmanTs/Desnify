@@ -68,7 +68,7 @@ const AllProducts = () => {
       </div>
 
       <main className="relative flex-1 bg-[#E7E7E3] md:h-screen overflow-auto">
-        <div className="sticky top-0">
+        <div className="sticky top-0 z-10">
           <Header />
         </div>
         <Calendar calendar={false} title={"All Products"} />
