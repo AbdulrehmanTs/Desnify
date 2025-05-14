@@ -1,34 +1,3 @@
-// import { useState } from "react";
-// import Sidebar from "../../components/Dashboard/Sidebar";
-// import Header from "../../components/Dashboard/Header";
-// import DashboardCard from "../../components/Dashboard/Card";
-// import Table from "../../components/Dashboard/Table";
-// import Calendar from "../../components/Dashboard/Calendar";
-
-// export default function Dashboard() {
-//   return (
-//     <div className="flex">
-//       <Sidebar />
-//       <main className="flex-1  bg-[#E7E7E3]">
-//         <Header />
-//         <Calendar calendar={true} title={"Dashboard"}/>
-//         <div className="p-6 2xl:mt-[-40px]">
-//           <div className="mt-4 grid grid-cols-4 gap-4 ">
-//           <DashboardCard title="Total Orders" amount="126.500" />
-//           <DashboardCard title="Active Orders" amount="126.500" />
-//           <DashboardCard title="Completed Orders" amount="126.500" />
-//           <DashboardCard title="Return Orders" amount="126.500" />
-//         </div>
-//         <div className="mt-6"></div>
-//         <Table />
-
-//         </div>
-
-//       </main>
-//     </div>
-//   );
-// }
-
 import { useEffect, useState } from "react";
 import Sidebar from "../../components/Dashboard/Sidebar";
 import Header from "../../components/Dashboard/Header";
