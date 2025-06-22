@@ -2,8 +2,13 @@ import { Link } from "react-router-dom";
 import Plus from "../../assets/Products/plus.svg";
 
 const DiscountedProduct = ({ prod }) => {
+  const discount = ((prod?.regPrice - prod?.salesPrice) / prod?.regPrice) * 100;
+  const discountInPercent = Math.floor(discount) + "%";
   return (
-    <Link to={`/products/${prod?._id}`} className="w-[500px] ml-2 md:w-[300px] md:ml-0 max-w-xs   overflow-hidden p-2">
+    <Link
+      to={`/products/${prod?._id}`}
+      className="w-[500px] ml-2 md:w-[300px] md:ml-0 max-w-xs   overflow-hidden p-2"
+    >
       {/* Product Image Section */}
       <div className="relative">
         {/* <img src={`${BlackShirt}`} alt="Product" className="bg-[#F3F3F3] w-full h-auto rounded-2xl min-h-72" /> */}
@@ -13,9 +18,11 @@ const DiscountedProduct = ({ prod }) => {
           className="bg-[#F3F3F3] w-full h-auto rounded-2xl min-h-72"
         />
         {/* Wishlist Icon at Top-Right */}
-        <div className=" flex justify-center  bg-[#51BC74] rounded-[10px] absolute top-3 left-3 w-14 h-6 cursor-pointer">
-          <p className="text-center text-white">-13%</p>
-        </div>
+        {discount > 0 && (
+          <div className=" flex justify-center  bg-[#51BC74] rounded-[10px] absolute top-3 left-3 w-14 h-6 cursor-pointer">
+            <p className="text-center text-white">-{discountInPercent}</p>
+          </div>
+        )}
       </div>
 
       {/* Product Info */}
@@ -31,9 +38,9 @@ const DiscountedProduct = ({ prod }) => {
         {/* Box with Quantity */}
         <div className="flex items-center">
           <p className="text-gray-500 line-through mr-2">
-            Rs.{prod?.salesPrice}
+            Rs.{prod?.regPrice}
           </p>
-          <p className="text-black font-bold">Rs.{prod?.regPrice}</p>
+          <p className="text-black font-bold">Rs.{prod?.salesPrice}</p>
         </div>
 
         {/* Order Button */}

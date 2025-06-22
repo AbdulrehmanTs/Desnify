@@ -26,7 +26,6 @@ const Home = () => {
         setLoading(true); // Start loading
         const response = await fetch(ApiBaseUrl + path, options);
         const result = await response.json();
-        console.log("result: ", result);
         setProducts(result);
         if (result.msg === "Session Expired") {
           autoLogout();

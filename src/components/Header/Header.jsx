@@ -36,7 +36,9 @@ const Header = () => {
     <header className="w-full mx-auto flex justify-between items-center px-4 md:px-24 py-5 mb-5 z-50 relative">
       {/* Logo */}
       <div>
-        <img src={Logo} width={80} height={38} alt="Logo" />
+        <Link to="/">
+          <img src={Logo} width={80} height={38} alt="Logo" />
+        </Link>
       </div>
 
       {/* Mobile Menu Button */}
@@ -56,9 +58,9 @@ const Header = () => {
         <ul className="flex flex-col md:flex-row items-center gap-6 font-[karla] text-[14px] p-5 md:p-0">
           {[
             { name: "Home", path: "/" },
+            { name: "Products", path: "/products" },
             { name: "Contact", path: "/contact" },
             { name: "About", path: "/about" },
-            { name: "Products", path: "/products" },
           ].map(({ name, path }) => (
             <li key={path} className="cursor-pointer">
               <Link

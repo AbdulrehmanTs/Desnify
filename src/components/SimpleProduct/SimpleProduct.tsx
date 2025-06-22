@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import BoxImage from "../../assets/Products/Box.svg";
 import Wishlist from "../../assets/Header/Wishlist.svg";
 import ColoredWishlist from "../../assets/Products/ColoredWishlist.svg";
@@ -23,8 +23,6 @@ const SimpleProduct = ({ product }) => {
     }
   }
   const [isWishlisted, setIsWishlisted] = useState(product?.isWishlisted);
-
-  console.log(product?._id)
   async function handleAddToWishlist() {
     if (!loggedIn) return navigate("/login")
     // Optimistic update

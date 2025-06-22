@@ -1,126 +1,14 @@
-// import { useState } from "react";
-// import ProductImage from "../../assets/Products/ProductImage.svg";
-// import SecondProductImage from "../../assets/Products/SecondProductImage.svg";
-
-// const CustomizePage = () => {
-//     const [selectedColor, setSelectedColor] = useState(SecondProductImage);
-//     const [selectedDesign, setSelectedDesign] = useState(null);
-
-//     return (
-//         <>
-//             <div className="w-full 2xl:w-[1440px] md:w-[1240px] mx-auto px-4 sm:px-6 mb-24">
-//                 {/* Product Detail Container */}
-//                 <div className="w-full flex flex-col sm:flex-row md:flex-row my-12 2xl:my-24  items-center">
-//                     {/* Sidebar - Designs */}
-//                     <div className="w-full md:w-1/3 border-r p-4 h-[750px] pr-8">
-//                         <h2 className="font-[Karla] font-normal text-[24px] leading-[100%] tracking-[0%] mb-4">
-//                             <span className="text-[#292D32] ">&larr;</span> Edit Design
-//                         </h2>
-//                         <p className="font-[Karla] font-medium text-[14px] leading-[100%] tracking-[0%] text-gray-600">
-//                             Our Premium Designs
-//                         </p>
-
-//                         <div className="grid grid-cols-2 gap-4 mt-4">
-//                             {[1, 2, 3, 4].map((id) => (
-
-//                                 <div
-//                                     key={id}
-//                                     className={` cursor-pointer ${selectedDesign === id ? "border-green-500" : ""
-//                                         }`}
-//                                     onClick={() => setSelectedDesign(id)}
-//                                 >
-//                                     <img src={ProductImage} alt="T-Shirt" className="w-full h-auto object-contain border p-4 rounded-lg" />
-//                                     <p className="font-[Karla] font-medium text-[14px] leading-[100%] tracking-[0%] text-center mt-1">
-//                                         New Fashion
-//                                     </p>
-
-//                                 </div>
-//                             ))}
-//                         </div>
-//                         <div className="w-full flex justify-between">
-//                             <div className="mt-6 border-t pt-4 w-[45%] text-[#818181]"></div>
-//                             <span className="font-[Karla] font-normal text-[12px] leading-[100%] tracking-[0%] pt-4">
-//                                 OR
-//                             </span>
-
-//                             <div className="mt-6 border-t pt-4 w-[45%] text-[#818181]"></div>
-//                         </div>
-
-//                         <div className="relative w-full">
-//                             <input
-//                                 type="text"
-//                                 placeholder="Generate from AI"
-//                                 className="w-full p-2 pr-10 border border-[#9E9E9E] rounded-md focus:outline-none focus:ring-2 focus:ring-green-500
-//              placeholder:font-[Karla] placeholder:font-normal placeholder:text-[12px] placeholder:leading-[100%] placeholder:tracking-[0%]"
-//                             />
-
-//                             <svg
-//                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5"
-//                                 xmlns="http://www.w3.org/2000/svg"
-//                                 fill="none"
-//                                 viewBox="0 0 24 24"
-//                                 stroke="currentColor"
-//                             >
-//                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35M15 10a5 5 0 10-10 0 5 5 0 1010 0z" />
-//                             </svg>
-//                         </div>
-
-//                     </div>
-
-//                     {/* Main Display */}
-//                     <div className="w-full md:w-2/3 flex flex-col items-center p-4">
-//                         <img
-//                             src={selectedColor === "white" ? SecondProductImage : ProductImage}
-//                             alt="T-Shirt"
-//                             className="w-48 sm:w-72 md:w-80 lg:w-[600px] object-contain"
-//                         />
-//                     </div>
-
-//                     {/* Sidebar - Color Selection */}
-//                     <div className=" w-full md:w-1/3  p-4  border-l h-[750px] flex flex-row md:flex-col pl-8 justify-center md:justify-start items-start gap-2 md:gap-4">
-//                         {["white", "black"].map((color) => (
-//                             <div
-//                                 key={color}
-//                                 className={`border p-2 rounded-md cursor-pointer ${selectedColor === color ? "border-green-500" : ""
-//                                     }`}
-//                                 onClick={() => setSelectedColor(color)}
-//                             >
-//                                 <img src={color === "white" ? SecondProductImage : ProductImage} alt={color} className="w-30 h-auto object-contain" />
-//                             </div>
-//                         ))}
-//                         {/* Add to Cart Button */}
-
-//                     </div>
-
-//                 </div>
-//                 <div className="w-full flex">
-//                     <div className="w-full flex items-end justify-end pr-44">
-//                         <button className="bg-[#51BC74] text-white w-[203px] h-[60px] rounded-[12px] shadow-md hover:bg-green-600">
-//                             Add To Cart
-//                         </button>
-//                     </div>
-
-//                 </div>
-//             </div>
-
-//         </>
-//     );
-// };
-
-// export default CustomizePage;
-
-import { useEffect, useState } from "react";
-import ProductImage from "../../assets/Products/ProductImage.svg";
-import SecondProductImage from "../../assets/Products/SecondProductImage.svg";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { autoLogout, getToken } from "../../hooks/useAuth";
-import { ApiBaseUrl } from "../../lib/utils";
+import { ApiBaseUrl, Text2ImgApiKey } from "../../lib/utils";
 import Spinner from "../../components/loader/spinner";
 import { useCart } from "../../contexts/cartContext";
+import { PiStarFourFill } from "react-icons/pi";
+import { Stage, Layer, Image as KonvaImage, Transformer } from "react-konva";
+import { LuCheck, LuX } from "react-icons/lu";
 
 const CustomizePage = () => {
-  const [selectedColor, setSelectedColor] = useState(SecondProductImage);
-  const [selectedDesign, setSelectedDesign] = useState(null);
   const { addToCart } = useCart();
   const navigate = useNavigate();
 
@@ -130,6 +18,20 @@ const CustomizePage = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [selectedImage, setSelectedImage] = useState(
+    product?.images[0]?.imageUrl
+  );
+  const [selectedDesign, setSelectedDesign] = useState(null);
+
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiImages, setAiImages] = useState([]);
+  const [aiError, setAiError] = useState(null);
+
+  const [prompt, setPrompt] = useState("");
+  const [generatedImage, setGeneratedImage] = useState(null);
+  const [generateLoading, setGenerateLoading] = useState(false);
+  const [generateError, setGenerateError] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -146,6 +48,7 @@ const CustomizePage = () => {
         );
         const result = await response.json();
         setProduct(result.data);
+        setSelectedImage(result?.data?.images[0]?.imageUrl);
         if (result.msg === "Session Expired") {
           autoLogout();
         }
@@ -157,8 +60,101 @@ const CustomizePage = () => {
       }
     };
 
+    const fetchPremiumDesigns = async () => {
+      try {
+        setAiLoading(true); // Start loading
+        const response = await fetch(ApiBaseUrl + "/order/getAllAIImage", {
+          method: "get",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const result = await response.json();
+        setAiImages(result.data);
+        if (result.msg === "Session Expired") {
+          autoLogout();
+        }
+        if (!response.ok) throw new Error("Network response was not ok");
+      } catch (err) {
+        setAiError(err.message);
+      } finally {
+        setAiLoading(false); // Stop loading
+      }
+    };
+
     fetchProducts();
+    fetchPremiumDesigns();
   }, [params.id, token]);
+
+  const handleGenerate = async (e) => {
+    e.preventDefault();
+    setGenerateLoading(true);
+    setGenerateError(null);
+    setGeneratedImage(null);
+
+    try {
+      const response = await fetch(
+        "https://modelslab.com/api/v6/realtime/text2img",
+        {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            key: Text2ImgApiKey,
+            prompt,
+          }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const result = await response.json();
+      if (result?.status === "success") {
+        setGeneratedImage({ _id: result.id, image: result?.output[0] });
+        uploadAiImage(result?.output[0]);
+      } else {
+        setGenerateError(result?.message);
+      }
+    } catch (err) {
+      setGenerateError(err.message || "Something went wrong");
+    } finally {
+      setGenerateLoading(false);
+    }
+  };
+
+  const uploadAiImage = async (image) => {
+    try {
+      const response = await fetch(ApiBaseUrl + "/order/uploadAIImage", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          image,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (err) {
+      console.log(err.message || "Something went wrong");
+    }
+  };
+
+  const handleAddtoCart = () => {
+    if (selectedDesign) {
+      product.customDesign = [
+        {
+          isfront: true,
+          customDesignID: selectedDesign._id,
+          image: selectedDesign.image,
+        },
+      ];
+    }
+    addToCart(product);
+  };
 
   if (loading) {
     return <Spinner />;
@@ -170,35 +166,45 @@ const CustomizePage = () => {
     <>
       <div className="w-full 2xl:w-[1440px] mx-auto px-4 sm:px-6 mb-24">
         {/* Product Detail Container */}
-        <div className="w-full flex flex-col md:flex-row items-center md:items-center  my-12 2xl:my-24">
+        <div className="w-full flex flex-col md:flex-row  my-12 2xl:my-24">
           {/* Sidebar - Designs */}
           <div className="w-full md:w-1/3 md:border-r p-4 h-auto md:h-[600px] 2xl:h-[750px] pr-8">
-            <button type="button" onClick={()=> navigate(-1)} className="font-[Karla] 2xl:mb-12 font-normal text-[24px] leading-[100%] tracking-[0%] mb-4 cursor-pointer">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="font-[Karla] 2xl:mb-12 font-normal text-[24px] leading-[100%] tracking-[0%] mb-4 cursor-pointer"
+            >
               <span className="text-[#292D32]">&larr;</span> Edit Design
             </button>
             <p className="font-[Karla] font-medium text-[14px] leading-[100%] tracking-[0%] text-gray-600">
               Our Premium Designs
             </p>
 
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              {[1, 2, 3, 4].map((id) => (
-                <div
-                  key={id}
-                  className={`cursor-pointer ${
-                    selectedDesign === id ? "border-green-500" : ""
-                  }`}
-                  onClick={() => setSelectedDesign(id)}
-                >
-                  <img
-                    src={ProductImage}
-                    alt="T-Shirt"
-                    className="w-full h-36 object-contain border p-4 rounded-lg"
-                  />
-                  <p className="font-[Karla] font-medium text-[14px] leading-[100%] tracking-[0%] text-center mt-2">
-                    New Fashion
-                  </p>
-                </div>
-              ))}
+            <div className="grid grid-cols-2 md:grid-cols-3 max-h-[25rem] overflow-auto gap-4 mt-4">
+              {aiLoading ? (
+                <Spinner />
+              ) : aiError ? (
+                <p className="text-red-500 text-sm text-center ">{error}</p>
+              ) : (
+                aiImages?.map(({ image, _id }) => (
+                  <div
+                    key={_id}
+                    className={`cursor-pointer ${
+                      selectedDesign === _id ? "border-green-500" : ""
+                    }`}
+                    onClick={() => setSelectedDesign({ _id, image })}
+                  >
+                    <img
+                      src={image}
+                      alt="T-Shirt"
+                      className="w-full object-contain border rounded-lg"
+                    />
+                    <p className="font-[Karla] font-medium text-[14px] leading-[100%] tracking-[0%] text-center mt-2">
+                      New Fashion
+                    </p>
+                  </div>
+                ))
+              )}
             </div>
 
             <div className="w-full flex justify-between items-center mt-5">
@@ -209,56 +215,90 @@ const CustomizePage = () => {
               <div className="h-px w-[44%] bg-gray-200"></div>
             </div>
 
-            <div className="relative w-full mt-4">
+            <h2 className="mt-8 font-[Karla] font-medium text-[14px] leading-[100%] tracking-[0%] text-gray-600">
+              Generate from AI
+            </h2>
+            <form onSubmit={handleGenerate} className="relative w-full mt-4">
               <input
                 type="text"
-                placeholder="Generate from AI"
-                className="w-full p-2 pr-10 border border-[#9E9E9E] rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 
+                placeholder="Describe your design idea ..."
+                className="w-full p-2 pr-11 border border-[#9E9E9E] rounded-md focus:outline-none focus:border-green-500 
                                 placeholder:font-[Karla] placeholder:font-normal placeholder:text-[12px] placeholder:leading-[100%] placeholder:tracking-[0%]"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
               />
-              <svg
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+              <button
+                disabled={generateLoading}
+                type="submit"
+                className="absolute right-0 inset-y-0 border-l border-[#9E9E9E] border disabled:opacity-40 px-2.5 bg-gray-200/40 hover:bg-gray-300/40 rounded cursor-pointer"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-4.35-4.35M15 10a5 5 0 10-10 0 5 5 0 1010 0z"
-                />
-              </svg>
+                <div className="rounded">
+                  <PiStarFourFill className="size-5 text-green-600" />
+                </div>
+              </button>
+            </form>
+
+            <div className="mt-6">
+              {generateLoading ? (
+                <div
+                  role="status"
+                  className="animate-pulse md:flex md:items-center"
+                >
+                  <div className="flex items-center justify-center w-full h-40 bg-gray-300 rounded-sm sm:w-40">
+                    <svg
+                      className="w-10 h-10 text-gray-200"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 20 18"
+                    >
+                      <path d="M18 0H2a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm4.376 10.481A1 1 0 0 1 16 15H4a1 1 0 0 1-.895-1.447l3.5-7A1 1 0 0 1 7.468 6a.965.965 0 0 1 .9.5l2.775 4.757 1.546-1.887a1 1 0 0 1 1.618.1l2.541 4a1 1 0 0 1 .028 1.011Z" />
+                    </svg>
+                  </div>
+                  <span className="sr-only">Loading...</span>
+                </div>
+              ) : generateError ? (
+                <p className="text-red-500 text-sm text-center ">
+                  {generateError}
+                </p>
+              ) : generatedImage ? (
+                <div
+                  onClick={() => setSelectedDesign(generatedImage)}
+                  className="h-40 w-40 overflow-hidden rounded-md cursor-pointer"
+                >
+                  <img
+                    src={generatedImage.image}
+                    alt="ai-image"
+                    className="size-full object-contain"
+                  />
+                </div>
+              ) : null}
             </div>
           </div>
 
           {/* Main Display */}
           <div className="w-full md:w-2/3 flex flex-col items-center p-4">
-            <div className="h-[500px] overflow-hidden">
-              <img
-                className="w-full h-full object-contain"
-                src={
-                  selectedColor === "white" ? SecondProductImage : ProductImage
-                }
-                alt="T-Shirt"
+            <div className="h-[600px]">
+              <OverlayImage
+                tshirtUrl={selectedImage}
+                imageUrl={selectedDesign?.image}
               />
             </div>
           </div>
 
           {/* Sidebar - Color Selection */}
           <div className="w-full md:w-1/3 p-4 md:border-l h-auto md:h-[600px] 2xl:h-[750px] flex flex-wrap md:flex-col pl-8 justify-center md:justify-start items-center md:items-start gap-2 md:gap-4">
-            {["white", "black"].map((color) => (
+            {product?.images?.map((item) => (
               <div
-                key={color}
+                key={item?._id}
                 className={`border overflow-hidden rounded-md cursor-pointer ${
-                  selectedColor === color ? "border-green-500" : ""
+                  selectedImage === item?.imageUrl ? "border-green-500" : ""
                 }`}
-                onClick={() => setSelectedColor(color)}
+                onClick={() => setSelectedImage(item?.imageUrl)}
               >
                 <img
-                  src={color === "white" ? SecondProductImage : ProductImage}
-                  alt={color}
+                  src={item?.imageUrl}
+                  alt={item?._id}
                   className="w-24 sm:w-28 md:w-30 2xl:w-36 h-auto object-contain"
                 />
               </div>
@@ -269,7 +309,7 @@ const CustomizePage = () => {
         {/* Add to Cart Button */}
         <div className="w-full flex justify-center md:justify-end pr-0 md:pr-20 2xl:pr-44">
           <button
-            onClick={() => addToCart(product)}
+            onClick={handleAddtoCart}
             type="button"
             className="cursor-pointer bg-green-600 py-3 md:py-2.5 px-8 w-full md:w-auto text-white rounded-lg shadow-md hover:bg-green-700"
           >
@@ -282,3 +322,102 @@ const CustomizePage = () => {
 };
 
 export default CustomizePage;
+
+const OverlayImage = ({ imageUrl, tshirtUrl }) => {
+  const [designImage, setDesignImage] = useState(null);
+  const [tshirtImage, setTshirtImage] = useState(null);
+  const [isSelected, setIsSelected] = useState(true);
+  const imageRef = useRef();
+  const transformerRef = useRef();
+
+  // Load the images
+  useEffect(() => {
+    const loadImage = (url, setter) => {
+      const img = new window.Image();
+      // img.crossOrigin = 'anonymous';
+      img.src = url;
+      img.onload = () => setter(img);
+    };
+
+    loadImage(imageUrl, setDesignImage);
+    loadImage(tshirtUrl, setTshirtImage);
+  }, [imageUrl, tshirtUrl]);
+
+  useEffect(() => {
+    if (transformerRef.current && imageRef.current) {
+      transformerRef.current.nodes([imageRef.current]);
+      transformerRef.current.getLayer().batchDraw();
+    }
+  }, [designImage]);
+
+  // Attach transformer to selected image
+  useEffect(() => {
+    if (isSelected && transformerRef.current && imageRef.current) {
+      transformerRef.current.nodes([imageRef.current]);
+      transformerRef.current.getLayer().batchDraw();
+    } else if (transformerRef.current) {
+      transformerRef.current.nodes([]);
+      transformerRef.current.getLayer().batchDraw();
+    }
+  }, [isSelected]);
+
+  const exportImage = () => {
+    console.log(imageRef.current.getStage())
+    const uri = imageRef.current.getStage()?.toDataURL({ pixelRatio: 2 });
+    console.log(uri); // or download
+    setIsSelected(false);
+  };
+
+  return (
+    <>
+      <Stage
+        width={500}
+        height={500}
+        onMouseDown={(e) => {
+          // Deselect when clicked outside the image
+          const clickedOnImage = e.target.name() === "design-image";
+          const clickedOnTransformer =
+            transformerRef.current?.nodes()?.includes(e.target) ||
+            e.target.getParent() === transformerRef.current;
+
+          if (!clickedOnImage && !clickedOnTransformer) {
+            setIsSelected(false);
+          }
+        }}
+      >
+        <Layer>
+          {tshirtImage && (
+            <KonvaImage image={tshirtImage} x={0} y={0} width={500} />
+          )}
+          {designImage && (
+            <>
+              <KonvaImage
+                name="design-image"
+                image={designImage}
+                x={190}
+                y={120}
+                width={120}
+                height={120}
+                draggable
+                ref={imageRef}
+                onClick={() => setIsSelected(true)}
+                onTap={() => setIsSelected(true)} // For mobile
+              />
+              {isSelected && <Transformer ref={transformerRef} />}
+            </>
+          )}
+        </Layer>
+      </Stage>
+      {designImage && (
+        <div className="mt-4 flex items-center justify-center gap-2">
+          <button onClick={() => setDesignImage(null)} className="rounded border border-red-200 bg-red-50 text-red-600 flex items-center gap-x-2 px-2 py-1">
+            <span>Cancel</span> <LuX />
+          </button>
+          <button onClick={exportImage} className="rounded border border-green-200 bg-green-50 text-green-600 flex items-center gap-x-2 px-2 py-1">
+           <span>Done</span> <LuCheck />
+          </button>
+        </div>
+      )}
+    </>
+  );
+};

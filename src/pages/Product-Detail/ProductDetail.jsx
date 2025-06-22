@@ -26,6 +26,7 @@ const ProductDetailPage = () => {
           }
         );
         const result = await response.json();
+        console.log('result: ', result);
         setProduct(result);
         if (result.msg === "Session Expired") {
           autoLogout();

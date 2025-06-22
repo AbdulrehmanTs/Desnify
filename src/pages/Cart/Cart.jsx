@@ -7,10 +7,8 @@ import { useNavigate } from "react-router-dom";
 const Cart = () => {
   const { cartItems, increaseQuantity, decreaseQuantity, deleteFromCart } =
     useCart();
-
+  console.log(cartItems)
   const navigate = useNavigate();
-
- 
 
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.salesPrice * item.quantity,
@@ -25,9 +23,7 @@ const Cart = () => {
   }
   return (
     <>
-      <div
-        className={`relative 2xl:h-[600px]`}
-      >
+      <div className={`relative 2xl:h-[600px]`}>
         <div className="w-full 2xl:w-[1440px] md:w-[1240px] mx-auto px-4 sm:px-6 mb-24">
           {/* Product Detail Container */}
           <div className="w-full flex flex-col sm:flex-row md:items-baseline relative my-12 2xl:my-24">
@@ -44,7 +40,7 @@ const Cart = () => {
                 >
                   <div className="w-full flex items-center justify-between">
                     <img
-                      src={item?.images[0].imageUrl}
+                      src={item?.customDesign ? item?.customDesign?.[0]?.image : item?.images[0].imageUrl}
                       alt={item.name}
                       className="w-24 h-auto rounded-lg object-cover mr-8"
                     />

@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { FaStar, FaMinus, FaPlus } from "react-icons/fa";
-import ProductImage from "../../assets/Products/ProductImage.svg";
-import SecondProductImage from "../../assets/Products/SecondProductImage.svg";
 import { Link } from "react-router-dom";
 
 const ProductDetail = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(ProductImage);
+  const [selectedImage, setSelectedImage] = useState(product?.images[0].imageUrl);
   const [selectedSize, setSelectedSize] = useState(null);
 
   const handleQuantityChange = (type) => {
@@ -31,17 +29,23 @@ const ProductDetail = ({ product }) => {
 
             {/* Smaller Images for Selection */}
             <div className="mt-4 flex gap-3">
-              <img
-                src={product?.images[0]?.imageUrl}
-                alt="White Shirt"
-                className={`w-14 md:size-16 border ${
-                  selectedImage === ProductImage
-                    ? "border-red-500"
-                    : "border-gray-300"
-                } cursor-pointer`}
-                onClick={() => setSelectedImage(ProductImage)}
-              />
-              <img
+              {product?.images?.map((item) => {
+                return (
+                  <img
+                    key={item._id}
+                    src={item?.imageUrl}
+                    alt="White Shirt"
+                    className={`w-14 md:size-16 border ${
+                      selectedImage === item?.imageUrl
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } cursor-pointer`}
+                    onClick={() => setSelectedImage(item?.imageUrl)}
+                  />
+                );
+              })}
+
+              {/* <img
                 src={SecondProductImage}
                 alt="Black Shirt"
                 className={`w-14 md:size-16 border ${
@@ -50,7 +54,7 @@ const ProductDetail = ({ product }) => {
                     : "border-gray-300"
                 } cursor-pointer`}
                 onClick={() => setSelectedImage(SecondProductImage)}
-              />
+              /> */}
             </div>
           </div>
 
@@ -95,10 +99,10 @@ const ProductDetail = ({ product }) => {
                   <button
                     key={size}
                     role="button"
-                    className={`border px-4 py-2 rounded-lg hover:bg-gray-200 cursor-pointer ${
+                    className={`border px-4 py-2 rounded-lg cursor-pointer ${
                       selectedSize === size
-                        ? "bg-[#5463FF] text-white border border-white"
-                        : "bg-white"
+                        ? "bg-blue-500 hover:bg-blue-600 text-white border border-white"
+                        : "bg-white hover:bg-gray-100"
                     }`}
                     onClick={() =>
                       setSelectedSize(size === selectedSize ? null : size)
