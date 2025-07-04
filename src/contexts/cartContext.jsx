@@ -35,7 +35,7 @@ export default function CartProvider ({ children }) {
       toast.success(`${product.name} added to cart.`);
     } else {
       // If item doesn't exist, add it to the cart with quantity 1
-      setCartItems([...cartItems, { ...product, quantity: 1 }]);
+      setCartItems([...cartItems, product]);
       toast.success(`${product.name} added to cart.`);
     }
   };

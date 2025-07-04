@@ -1,14 +1,13 @@
-import { useState } from "react";
 import Bin from "../../assets/Products/Bin.svg";
-import OrderConfirmation from "../../components/OrderConfirmation/OrderConfirmation";
+// import OrderConfirmation from "../../components/OrderConfirmation/OrderConfirmation";
 import { useCart } from "../../contexts/cartContext";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const { cartItems, increaseQuantity, decreaseQuantity, deleteFromCart } =
-    useCart();
-  console.log(cartItems)
+  useCart();
   const navigate = useNavigate();
+  console.log('cartItems: ', cartItems);
 
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.salesPrice * item.quantity,
@@ -40,7 +39,11 @@ const Cart = () => {
                 >
                   <div className="w-full flex items-center justify-between">
                     <img
-                      src={item?.customDesign ? item?.customDesign?.[0]?.image : item?.images[0].imageUrl}
+                      src={
+                        item?.customDesign
+                          ? item?.customDesign?.[0]?.image
+                          : item?.images[0].imageUrl
+                      }
                       alt={item.name}
                       className="w-24 h-auto rounded-lg object-cover mr-8"
                     />

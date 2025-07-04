@@ -1,16 +1,26 @@
 import { useState } from "react";
 import { FaStar, FaMinus, FaPlus } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ProductDetail = ({ product }) => {
   const [quantity, setQuantity] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(product?.images[0].imageUrl);
+  const [selectedImage, setSelectedImage] = useState(
+    product?.images[0].imageUrl
+  );
   const [selectedSize, setSelectedSize] = useState(null);
+  const navigate = useNavigate();
 
   const handleQuantityChange = (type) => {
     setQuantity((prev) =>
       type === "increase" ? prev + 1 : prev > 1 ? prev - 1 : 1
     );
+  };
+
+  const handleCustomize = () => {
+    const newProduct = { ...product, quantity, selectedSize };
+    console.log('newProduct: ', newProduct);
+    localStorage.setItem("selectedItem", JSON.stringify(newProduct));
+    navigate(`/customize/${product?._id}`);
   };
 
   return (
@@ -146,13 +156,12 @@ const ProductDetail = ({ product }) => {
 
             {/* Button */}
             <div className="mt-6">
-              <Link
-                to={`/customize/${product?._id}`}
-                type="button"
+              <button
+                onClick={handleCustomize}
                 className="w-full md:w-auto px-4 md:px-16 cursor-pointer py-3 bg-[#51BC74] text-white rounded-md hover:bg-green-700 transition"
               >
                 Start Design
-              </Link>
+              </button>
             </div>
           </div>
         </div>

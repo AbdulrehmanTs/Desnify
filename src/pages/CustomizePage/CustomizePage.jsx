@@ -16,6 +16,7 @@ const CustomizePage = () => {
   const token = getToken();
 
   const [product, setProduct] = useState(null);
+  console.log('product: ', product);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -32,33 +33,51 @@ const CustomizePage = () => {
   const [generatedImage, setGeneratedImage] = useState(null);
   const [generateLoading, setGenerateLoading] = useState(false);
   const [generateError, setGenerateError] = useState(null);
+  const [customDesign, setCustomDesign] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         setLoading(true); // Start loading
-        const response = await fetch(
-          ApiBaseUrl + "/product/getProductById?productId=" + params.id,
-          {
-            method: "get",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const result = await response.json();
-        setProduct(result.data);
-        setSelectedImage(result?.data?.images[0]?.imageUrl);
-        if (result.msg === "Session Expired") {
-          autoLogout();
+        const result = localStorage.getItem("selectedItem")
+        if (result) {
+          const product = JSON.parse(result)
+          setProduct(product);
+          setSelectedImage(product?.images[0]?.imageUrl);
+        } else {
+          throw new Error("something went wrong.")
         }
-        if (!response.ok) throw new Error("Network response was not ok");
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false); // Stop loading
       }
     };
+    // const fetchProducts = async () => {
+    //   try {
+    //     setLoading(true); // Start loading
+    //     const response = await fetch(
+    //       ApiBaseUrl + "/product/getProductById?productId=" + params.id,
+    //       {
+    //         method: "get",
+    //         headers: {
+    //           Authorization: `Bearer ${token}`,
+    //         },
+    //       }
+    //     );
+    //     const result = await response.json();
+    //     setProduct(result.data);
+    //     setSelectedImage(result?.data?.images[0]?.imageUrl);
+    //     if (result.msg === "Session Expired") {
+    //       autoLogout();
+    //     }
+    //     if (!response.ok) throw new Error("Network response was not ok");
+    //   } catch (err) {
+    //     setError(err.message);
+    //   } finally {
+    //     setLoading(false); // Stop loading
+    //   }
+    // };
 
     const fetchPremiumDesigns = async () => {
       try {
@@ -67,6 +86,7 @@ const CustomizePage = () => {
           method: "get",
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         });
         const result = await response.json();
@@ -99,6 +119,7 @@ const CustomizePage = () => {
           method: "post",
           headers: {
             "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*"
           },
           body: JSON.stringify({
             key: Text2ImgApiKey,
@@ -114,7 +135,8 @@ const CustomizePage = () => {
         setGeneratedImage({ _id: result.id, image: result?.output[0] });
         uploadAiImage(result?.output[0]);
       } else {
-        setGenerateError(result?.message);
+        console.log(result?.message);
+        setGenerateError("Error...Something went wrong");
       }
     } catch (err) {
       setGenerateError(err.message || "Something went wrong");
@@ -144,12 +166,12 @@ const CustomizePage = () => {
   };
 
   const handleAddtoCart = () => {
-    if (selectedDesign) {
+    if (customDesign) {
       product.customDesign = [
         {
           isfront: true,
           customDesignID: selectedDesign._id,
-          image: selectedDesign.image,
+          image: customDesign,
         },
       ];
     }
@@ -180,7 +202,7 @@ const CustomizePage = () => {
               Our Premium Designs
             </p>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 max-h-[25rem] overflow-auto gap-4 mt-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 max-h-[25rem] overflow-auto gap-4 mt-4">
               {aiLoading ? (
                 <Spinner />
               ) : aiError ? (
@@ -282,6 +304,7 @@ const CustomizePage = () => {
               <OverlayImage
                 tshirtUrl={selectedImage}
                 imageUrl={selectedDesign?.image}
+                setCustomDesign={setCustomDesign}
               />
             </div>
           </div>
@@ -323,7 +346,8 @@ const CustomizePage = () => {
 
 export default CustomizePage;
 
-const OverlayImage = ({ imageUrl, tshirtUrl }) => {
+// eslint-disable-next-line react/prop-types
+const OverlayImage = ({ imageUrl, tshirtUrl, setCustomDesign }) => {
   const [designImage, setDesignImage] = useState(null);
   const [tshirtImage, setTshirtImage] = useState(null);
   const [isSelected, setIsSelected] = useState(true);
@@ -333,8 +357,8 @@ const OverlayImage = ({ imageUrl, tshirtUrl }) => {
   // Load the images
   useEffect(() => {
     const loadImage = (url, setter) => {
-      const img = new window.Image();
-      // img.crossOrigin = 'anonymous';
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
       img.src = url;
       img.onload = () => setter(img);
     };
@@ -361,11 +385,10 @@ const OverlayImage = ({ imageUrl, tshirtUrl }) => {
     }
   }, [isSelected]);
 
-  const exportImage = () => {
-    console.log(imageRef.current.getStage())
+  const exportImage = async () => {
     const uri = imageRef.current.getStage()?.toDataURL({ pixelRatio: 2 });
-    console.log(uri); // or download
     setIsSelected(false);
+    setCustomDesign(uri);
   };
 
   return (
@@ -410,10 +433,10 @@ const OverlayImage = ({ imageUrl, tshirtUrl }) => {
       </Stage>
       {designImage && (
         <div className="mt-4 flex items-center justify-center gap-2">
-          <button onClick={() => setDesignImage(null)} className="rounded border border-red-200 bg-red-50 text-red-600 flex items-center gap-x-2 px-2 py-1">
+          <button onClick={() => setDesignImage(null)} className="cursor-pointer rounded border border-red-200 bg-red-50 text-red-600 flex items-center gap-x-2 px-2 py-1">
             <span>Cancel</span> <LuX />
           </button>
-          <button onClick={exportImage} className="rounded border border-green-200 bg-green-50 text-green-600 flex items-center gap-x-2 px-2 py-1">
+          <button onClick={exportImage} className="cursor-pointer rounded border border-green-200 bg-green-50 text-green-600 flex items-center gap-x-2 px-2 py-1">
            <span>Done</span> <LuCheck />
           </button>
         </div>
