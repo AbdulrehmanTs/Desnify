@@ -358,7 +358,6 @@ const OverlayImage = ({ imageUrl, tshirtUrl, setCustomDesign }) => {
   useEffect(() => {
     const loadImage = (url, setter) => {
       const img = new Image();
-      img.crossOrigin = 'anonymous';
       img.src = url;
       img.onload = () => setter(img);
     };
@@ -431,7 +430,7 @@ const OverlayImage = ({ imageUrl, tshirtUrl, setCustomDesign }) => {
           )}
         </Layer>
       </Stage>
-      {designImage && (
+      {designImage && isSelected && (
         <div className="mt-4 flex items-center justify-center gap-2">
           <button onClick={() => setDesignImage(null)} className="cursor-pointer rounded border border-red-200 bg-red-50 text-red-600 flex items-center gap-x-2 px-2 py-1">
             <span>Cancel</span> <LuX />
