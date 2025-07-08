@@ -25,7 +25,8 @@ export default function Checkout() {
     address: "",
     city: "",
     state: "",
-    zip: "",
+    zipCode: "",
+    country: "",
   });
 
   const [error, setError] = useState("");
@@ -35,24 +36,39 @@ export default function Checkout() {
     setError(""); // clear error when typing
   };
 
+  console.log("cartItems", cartItems);
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Simple validation
-    const { fullName, email, address, city, state, zip } = formData;
+    const { fullName, email, address, city, state, zipCode, country } =
+      formData;
 
-    if (!fullName || !email || !address || !city || !state || !zip) {
+    if (
+      !fullName ||
+      !email ||
+      !address ||
+      !city ||
+      !state ||
+      !zipCode ||
+      !country
+    ) {
       setError("Please fill in all required fields.");
       return;
     }
-
     try {
       const response = await fetch(`${ApiBaseUrl}/order/placeOrder`, {
         method: "POST",
         body: JSON.stringify({
-          items: cartItems,
+          items: cartItems.map((item) => ({
+            productId: item._id,
+            quantity: item.quantity,
+            price: item.salesPrice,
+            customDesign: item.customDesign,
+          })),
           totalAmount: total,
-          shippingAddress: { address, city, state, zip },
+          shippingAddress: { address, city, state, zipCode, country },
           paymentMethod: "cod",
+          finalImages: cartItems.map((item) => ({ ...item.finalImages[0] })),
         }),
         headers: {
           "Content-Type": "application/json",
@@ -130,11 +146,19 @@ export default function Checkout() {
                 />
                 <input
                   className="border p-3 rounded w-full"
-                  name="zip"
-                  value={formData.zip}
+                  name="zipCode"
+                  value={formData.zipCode}
                   onChange={handleChange}
                   type="text"
                   placeholder="ZIP/Postal Code"
+                />
+                <input
+                  className="border p-3 rounded w-full"
+                  name="country"
+                  value={formData.country}
+                  onChange={handleChange}
+                  type="text"
+                  placeholder="Country"
                 />
               </div>
             </div>
@@ -159,19 +183,19 @@ export default function Checkout() {
             <h3 className="text-2xl font-semibold mb-6">Order Summary</h3>
             <div className="flex justify-between mb-2 text-gray-600">
               <span>Subtotal</span>
-              <span>${subtotal?.toFixed(2)}</span>
+              <span>Rs.{subtotal?.toFixed(2)}</span>
             </div>
             <div className="flex justify-between mb-2 text-gray-600">
               <span>Shipping</span>
-              <span>${shipping?.toFixed(2)}</span>
+              <span>Rs.{shipping?.toFixed(2)}</span>
             </div>
             <div className="flex justify-between mb-6 text-gray-600">
               <span>Tax</span>
-              <span>${tax?.toFixed(2)}</span>
+              <span>Rs.{tax?.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-xl font-semibold mb-6">
               <span>Total</span>
-              <span>${total?.toFixed(2)}</span>
+              <span>Rs.{total?.toFixed(2)}</span>
             </div>
             <button
               type="submit"

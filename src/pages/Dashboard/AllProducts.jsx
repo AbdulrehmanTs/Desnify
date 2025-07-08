@@ -22,7 +22,7 @@ const AllProducts = () => {
         setLoading(true); // Start loading
         const response = await fetch(
           ApiBaseUrl +
-            "/product/getAllProductsByUserId?pageNumber=1&pageSize=10",
+            "/product/getAllProductsByUserId?pageNumber=1&pageSize=1000",
           {
             method: "GET",
             headers: {
@@ -31,7 +31,6 @@ const AllProducts = () => {
           }
         );
         const result = await response.json();
-        console.log("result: ", result);
         setProducts(result.data);
         if (result.msg === "Session Expired") {
           autoLogout();

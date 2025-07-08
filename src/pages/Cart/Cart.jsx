@@ -7,8 +7,7 @@ const Cart = () => {
   const { cartItems, increaseQuantity, decreaseQuantity, deleteFromCart } =
   useCart();
   const navigate = useNavigate();
-  console.log('cartItems: ', cartItems);
-
+  console.log(cartItems)
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.salesPrice * item.quantity,
     0
@@ -37,18 +36,20 @@ const Cart = () => {
                   key={item._id}
                   className="w-full flex items-center justify-between shadow-[0px_0.98px_1.96px_0px_rgba(0,0,0,0.05)] py-4 space-x-4"
                 >
-                  <div className="w-full flex items-center justify-between">
-                    <img
-                      src={
-                        item?.customDesign
-                          ? item?.customDesign?.[0]?.image
-                          : item?.images[0].imageUrl
-                      }
-                      alt={item.name}
-                      className="w-24 h-auto rounded-lg object-cover mr-8"
-                    />
+                  <div className="flex items-center justify-between">
+                    <div className="size-24 rounded mr-2">
+                      <img
+                        src={
+                          item?.finalImages
+                            ? item?.finalImages?.[0]?.imageUrl
+                            : item?.images[0].imageUrl
+                        }
+                        alt={item.name}
+                        className="size-full rounded-lg object-cover mr-8"
+                      />
+                    </div>
                     <div className="flex-1 space-y-2">
-                      <p className="font-[inter] font-semibold text-[17.61px] leading-[17.61px] tracking-[0%]">
+                      <p className="font-semibold leading-[17.61px] tracking-[0%]">
                         {item.name}
                       </p>
                       {/* <p className="font-[inter] font-normal text-[15.65px] leading-[15.65px] tracking-[0%] text-gray-500">

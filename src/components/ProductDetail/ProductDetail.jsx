@@ -18,7 +18,6 @@ const ProductDetail = ({ product }) => {
 
   const handleCustomize = () => {
     const newProduct = { ...product, quantity, selectedSize };
-    console.log('newProduct: ', newProduct);
     localStorage.setItem("selectedItem", JSON.stringify(newProduct));
     navigate(`/customize/${product?._id}`);
   };
@@ -41,17 +40,21 @@ const ProductDetail = ({ product }) => {
             <div className="mt-4 flex gap-3">
               {product?.images?.map((item) => {
                 return (
-                  <img
+                  <div
                     key={item._id}
-                    src={item?.imageUrl}
-                    alt="White Shirt"
-                    className={`w-14 md:size-16 border ${
-                      selectedImage === item?.imageUrl
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } cursor-pointer`}
                     onClick={() => setSelectedImage(item?.imageUrl)}
-                  />
+                    className="border w-14 md:size-16 cursor-pointer"
+                  >
+                    <img
+                      src={item?.imageUrl}
+                      alt="White Shirt"
+                      className={`size-full object-cover object-center ${
+                        selectedImage === item?.imageUrl
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      } `}
+                    />
+                  </div>
                 );
               })}
 

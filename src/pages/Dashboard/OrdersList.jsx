@@ -21,7 +21,7 @@ const OrdersList = () => {
       try {
         setLoading(true); // Start loading
         const response = await fetch(
-          ApiBaseUrl + "/order/getAllOrders?pageNumber=1&pageSize=10",
+          ApiBaseUrl + "/order/getAllOrders?pageNumber=1&pageSize=1000",
           {
             method: "GET",
             headers: {
@@ -30,7 +30,6 @@ const OrdersList = () => {
           }
         );
         const result = await response.json();
-        console.log("result: ", result);
         setOrders(result.data);
         if (result.msg === "Session Expired") {
           autoLogout();

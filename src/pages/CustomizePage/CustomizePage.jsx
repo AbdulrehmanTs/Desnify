@@ -7,6 +7,8 @@ import { useCart } from "../../contexts/cartContext";
 import { PiStarFourFill } from "react-icons/pi";
 import { Stage, Layer, Image as KonvaImage, Transformer } from "react-konva";
 import { LuCheck, LuX } from "react-icons/lu";
+import useImage from "use-image";
+import { toast } from "react-toastify";
 
 const CustomizePage = () => {
   const { addToCart } = useCart();
@@ -16,7 +18,7 @@ const CustomizePage = () => {
   const token = getToken();
 
   const [product, setProduct] = useState(null);
-  console.log('product: ', product);
+  // console.log("product: ", product);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -31,6 +33,7 @@ const CustomizePage = () => {
 
   const [prompt, setPrompt] = useState("");
   const [generatedImage, setGeneratedImage] = useState(null);
+  const [aiImageId, setAiImageId] = useState(null);
   const [generateLoading, setGenerateLoading] = useState(false);
   const [generateError, setGenerateError] = useState(null);
   const [customDesign, setCustomDesign] = useState(null);
@@ -39,13 +42,13 @@ const CustomizePage = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true); // Start loading
-        const result = localStorage.getItem("selectedItem")
+        const result = localStorage.getItem("selectedItem");
         if (result) {
-          const product = JSON.parse(result)
+          const product = JSON.parse(result);
           setProduct(product);
           setSelectedImage(product?.images[0]?.imageUrl);
         } else {
-          throw new Error("something went wrong.")
+          throw new Error("something went wrong.");
         }
       } catch (err) {
         setError(err.message);
@@ -53,58 +56,33 @@ const CustomizePage = () => {
         setLoading(false); // Stop loading
       }
     };
-    // const fetchProducts = async () => {
-    //   try {
-    //     setLoading(true); // Start loading
-    //     const response = await fetch(
-    //       ApiBaseUrl + "/product/getProductById?productId=" + params.id,
-    //       {
-    //         method: "get",
-    //         headers: {
-    //           Authorization: `Bearer ${token}`,
-    //         },
-    //       }
-    //     );
-    //     const result = await response.json();
-    //     setProduct(result.data);
-    //     setSelectedImage(result?.data?.images[0]?.imageUrl);
-    //     if (result.msg === "Session Expired") {
-    //       autoLogout();
-    //     }
-    //     if (!response.ok) throw new Error("Network response was not ok");
-    //   } catch (err) {
-    //     setError(err.message);
-    //   } finally {
-    //     setLoading(false); // Stop loading
-    //   }
-    // };
-
-    const fetchPremiumDesigns = async () => {
-      try {
-        setAiLoading(true); // Start loading
-        const response = await fetch(ApiBaseUrl + "/order/getAllAIImage", {
-          method: "get",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        const result = await response.json();
-        setAiImages(result.data);
-        if (result.msg === "Session Expired") {
-          autoLogout();
-        }
-        if (!response.ok) throw new Error("Network response was not ok");
-      } catch (err) {
-        setAiError(err.message);
-      } finally {
-        setAiLoading(false); // Stop loading
-      }
-    };
 
     fetchProducts();
     fetchPremiumDesigns();
   }, [params.id, token]);
+
+  const fetchPremiumDesigns = async () => {
+    try {
+      setAiLoading(true); // Start loading
+      const response = await fetch(ApiBaseUrl + "/order/getAllAIImage", {
+        method: "get",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const result = await response.json();
+      setAiImages(result.data);
+      if (result.msg === "Session Expired") {
+        autoLogout();
+      }
+      if (!response.ok) throw new Error("Network response was not ok");
+    } catch (err) {
+      setAiError(err.message);
+    } finally {
+      setAiLoading(false); // Stop loading
+    }
+  };
 
   const handleGenerate = async (e) => {
     e.preventDefault();
@@ -119,7 +97,7 @@ const CustomizePage = () => {
           method: "post",
           headers: {
             "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
+            "Access-Control-Allow-Origin": "*",
           },
           body: JSON.stringify({
             key: Text2ImgApiKey,
@@ -157,24 +135,67 @@ const CustomizePage = () => {
           image,
         }),
       });
+      const data = await response.json();
+      setAiImageId(data.data._id);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      fetchPremiumDesigns();
+    } catch (err) {
+      console.log(err.message || "Something went wrong");
+    }
+  };
+  const uploadImage = async (blob) => {
+    const formData = new FormData();
+    formData.append("files", blob);
+
+    try {
+      const response = await fetch(ApiBaseUrl + "/images/upload-image", {
+        method: "post",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        console.error("Upload failed:", result);
+      } else {
+        const imageDetails = result.urls.map((url, index) => {
+          return {
+            assetId: url.asset_id,
+            publicId: url.public_id,
+            imageUrl: url.imageurl,
+            isFrontSide: index == 0 ? true : false,
+          };
+        });
+        return imageDetails;
       }
     } catch (err) {
       console.log(err.message || "Something went wrong");
     }
   };
 
-  const handleAddtoCart = () => {
+  const handleAddtoCart = async () => {
     if (customDesign) {
-      product.customDesign = [
-        {
-          isfront: true,
-          customDesignID: selectedDesign._id,
-          image: customDesign,
-        },
-      ];
+      try {
+        const image = await uploadImage(customDesign);
+        if (image) {
+          product.customDesign = [
+            {
+              isfront: true,
+              customDesignID: selectedDesign._id,
+              image: selectedDesign.image,
+            },
+          ];
+          product.finalImages = image;
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error("Sorry an Error occured.");
+      }
     }
+    console.log(product)
     addToCart(product);
   };
 
@@ -202,7 +223,7 @@ const CustomizePage = () => {
               Our Premium Designs
             </p>
 
-            <div className="grid grid-cols-2 lg:grid-cols-3 max-h-[25rem] overflow-auto gap-4 mt-4">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-2 lg:grid-cols-3 max-h-[25rem] overflow-auto gap-3 lg:gap-4 mt-4">
               {aiLoading ? (
                 <Spinner />
               ) : aiError ? (
@@ -214,7 +235,12 @@ const CustomizePage = () => {
                     className={`cursor-pointer ${
                       selectedDesign === _id ? "border-green-500" : ""
                     }`}
-                    onClick={() => setSelectedDesign({ _id, image })}
+                    onClick={() =>
+                      setSelectedDesign({
+                        _id,
+                        image: `https://desnify.vercel.app/api/image-cors-proxy?url=${image}`,
+                      })
+                    }
                   >
                     <img
                       src={image}
@@ -285,7 +311,12 @@ const CustomizePage = () => {
                 </p>
               ) : generatedImage ? (
                 <div
-                  onClick={() => setSelectedDesign(generatedImage)}
+                  onClick={() =>
+                    setSelectedDesign({
+                      _id: aiImageId,
+                      image: `https://desnify.vercel.app/api/image-cors-proxy?url=${generatedImage.image}`,
+                    })
+                  }
                   className="h-40 w-40 overflow-hidden rounded-md cursor-pointer"
                 >
                   <img
@@ -358,6 +389,7 @@ const OverlayImage = ({ imageUrl, tshirtUrl, setCustomDesign }) => {
   useEffect(() => {
     const loadImage = (url, setter) => {
       const img = new Image();
+      img.crossOrigin = "crossOrigin";
       img.src = url;
       img.onload = () => setter(img);
     };
@@ -385,10 +417,45 @@ const OverlayImage = ({ imageUrl, tshirtUrl, setCustomDesign }) => {
   }, [isSelected]);
 
   const exportImage = async () => {
-    const uri = imageRef.current.getStage()?.toDataURL({ pixelRatio: 2 });
     setIsSelected(false);
-    setCustomDesign(uri);
+    setTimeout(() => {
+      const uri = imageRef.current.getStage().toDataURL({
+        pixelRatio: 0.5, // lower value = smaller size; 1 is default
+        mimeType: "image/png", // use JPEG to reduce size further
+      });
+
+      fetch(uri)
+        .then((res) => res.blob())
+        .then((blob) => {
+          setCustomDesign(blob);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }, 200);
   };
+
+  const [image] = useImage(tshirtUrl);
+  const containerSize = 500;
+  if (!image) return null;
+  const imageRatio = image.width / image.height;
+  const containerRatio = containerSize / containerSize;
+
+  let width, height, x, y;
+
+  if (imageRatio > containerRatio) {
+    // image is wider than container
+    width = containerSize;
+    height = image.height * (containerSize / image.width);
+    x = 0;
+    y = (containerSize - height) / 2;
+  } else {
+    // image is taller than container
+    height = containerSize;
+    width = image.width * (containerSize / image.height);
+    x = (containerSize - width) / 2;
+    y = 0;
+  }
 
   return (
     <>
@@ -409,7 +476,13 @@ const OverlayImage = ({ imageUrl, tshirtUrl, setCustomDesign }) => {
       >
         <Layer>
           {tshirtImage && (
-            <KonvaImage image={tshirtImage} x={0} y={0} width={500} />
+            <KonvaImage
+              image={tshirtImage}
+              width={width}
+              height={height}
+              x={x}
+              y={y}
+            />
           )}
           {designImage && (
             <>
@@ -430,13 +503,19 @@ const OverlayImage = ({ imageUrl, tshirtUrl, setCustomDesign }) => {
           )}
         </Layer>
       </Stage>
-      {designImage && isSelected && (
+      {designImage && (
         <div className="mt-4 flex items-center justify-center gap-2">
-          <button onClick={() => setDesignImage(null)} className="cursor-pointer rounded border border-red-200 bg-red-50 text-red-600 flex items-center gap-x-2 px-2 py-1">
+          <button
+            onClick={() => setDesignImage(null)}
+            className="cursor-pointer rounded border border-red-200 bg-red-50 text-red-600 flex items-center gap-x-2 px-2 py-1"
+          >
             <span>Cancel</span> <LuX />
           </button>
-          <button onClick={exportImage} className="cursor-pointer rounded border border-green-200 bg-green-50 text-green-600 flex items-center gap-x-2 px-2 py-1">
-           <span>Done</span> <LuCheck />
+          <button
+            onClick={exportImage}
+            className="cursor-pointer rounded border border-green-200 bg-green-50 text-green-600 flex items-center gap-x-2 px-2 py-1"
+          >
+            <span>Done</span> <LuCheck />
           </button>
         </div>
       )}

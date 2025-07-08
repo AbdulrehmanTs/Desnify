@@ -84,8 +84,14 @@ const Header = () => {
           }`}
         >
           <div className="flex gap-4 cursor-pointer">
-            <Link to="/cart">
+            <Link className="relative" to="/cart">
               <img src={Cart} width={21} height={20} alt="Cart" />
+              {/* badge */}
+              {cartItems.length > 0 && (
+                <span className="absolute -top-2 -left-2 text-xs text-white rounded-full size-4 bg-red-600 flex items-center justify-center">
+                  {cartItems.length}
+                </span>
+              )}
             </Link>
             <Link to="/wishlist">
               <img src={Wishlist} width={21} height={20} alt="Wishlist" />
